@@ -13,17 +13,22 @@ This section will hold terms as well as some short definitions for them.
 | Tactical Modeling   | A technique used to design the internal structure of a software system.                              |
 | Strategic Modeling  | A technique used to define the high-level structure and relationships of a software system.          |
 | Domain Model        | It's a software representation of the specific business the software is working for.                 |
-| Anemic Model        | A model consisinting of only data without any logic |
-| Core Domain         | The most important domain in the business were the business core resides |
-| Generic/Supporing Sub Domain | Domain models that support the core domain functionality, think of authentication for example |
-| Problem Space       | Involves examining subdomains and depetermining the necesities to create a core domain |
-| Solution Space      | Is one or more Bounded Contexts with specific software models |
-| Context Maps | |
-| Shared Kernel       | |
-| Smart Anti UI Pattern | |
-| Open Host Service | |
+| Anemic Model        | A model consisting of only data without any logic.                                                   |
+| Core Domain         | The most important domain in the business where the business core resides.                           |
+| Generic/Supporting Sub Domain | Domain models that support the core domain functionality, such as authentication.             |
+| Problem Space       | Involves examining subdomains and determining the necessities to create a core domain.              |
+| Solution Space      | One or more Bounded Contexts with specific software models.                                           |
+| Partnership         | A relationship in which two contexts will fail or succeed together.                                   |
+| Shared Kernel       | A portion of the domain model from one context is shared with another.                               |
+| Customer Supplier   | A relationship between two contexts where one is upstream and the other is downstream.                |
+| Conformist          | Similar to customer supplier, but the upstream team doesn't care about the needs of the downstream team. |
+| Anticorruption Layer | A layer that handles translation between contexts to maintain the model's language.                  |
+| Open Host Service   | A protocol that allows access to a subsystem and can be enhanced and translated for integration.      |
+| Publisher Language  | A shared language created to integrate two contexts.                                                 |
+| Separate Ways       | When there is no real relation between two contexts.                                                 |
+| Big Ball of Mud     | A legacy codebase with integrated modules and no clear boundaries between subdomains.                |
 | Modules             | Self-contained units of functionality that encapsulate a specific domain concept.                   |
-| Aggregates | |
+| Aggregates          | A cluster of domain objects treated as a single unit.                                                |
 | Entity              | An object that has a unique identity and is distinguishable from other objects.                      |
 | Value object        | An object that represents a concept rather than a unique identity.                                   |
 | Repository          | A mechanism for encapsulating storage, retrieval, and querying of domain objects.                   |
@@ -54,6 +59,7 @@ and how they relate to each other (using submodules, contexts and ubiquitous lan
 * Don't let architectural patterns define the bounded context.
 * Just as with domains, ideally a team should handle a Bounded Context. This is so there's no concept leaking 
 between contexts as if the team handles more than one, they may confuse the concepts on each context.
+* Use context maps to get a feeling of the landscape of the systems.
 
 ## Chapter 1: Getting started with DDD
 
@@ -157,3 +163,33 @@ For the **solution space** here are some questions:
 that while it's primary focus is the domain model, it should also contain the means for the external world to interact with the 
 model, to be able to translate use cases flows into domain operations. **Don't let architectural patterns affect the definition
 of the context**, the boundary is defined by the Ubiquitous Language.
+
+## Chapter 3: Context Maps
+It's a tool that forces the team to think about thew relationships between the different projects you may depend on. This will help
+the team determine whihc areas inter-team communication is imperative. It captures the current status of the environment.
+
+**A context map is not an enterprise architecutre or system topology diagram**
+
+Some organizational and integration patterns for contexts are:
+- **Partnership**: A relation in which 2 contexts will fail or succeed together. Such dependency makes the teams in charge of each
+context cooperate in the evolution of their interfaces and integrations. *Interdependant features should be coordinated and released
+at the same time*.
+- **Shared Kernel**: A portion of the domain model from 1 context is shared to another. *This generates a strong dependency* and needs
+to be handled carefully. A boundary must be made and any changes to the shared elements need to be done with prior consultation
+to the dependent team. A CI process is recommended to keep the ubiquitous language of the teams.
+- **Customer Supplier**: This happens between 2 contexts. One upstream, which may succeeed independently, and one downstream, which depends
+on the upstream.
+- **Conformist**: Similar to the customer supplier but the upstream team doesn't care about the needs of the downstream team.
+- **Anticorruption Layer (ACL)**: The downstream client will create an isolation layer that will handle translation between contexts. This
+helps the model keeps it's own language and this layer will handle any communication between the contexts.
+- **Open Host Service (OHS)**: It's the definition of a protocol that allows access to a subsystem. This protocol can then be accessed, enhanced
+and translated depending on who integrates with it. (You may use REST, RPC or other patterns)
+- **Publisher Language (PL)**: This happens when in order to integrate 2 contexts a shared language is created. This is usually used
+alongside the Open Host Service. (XML/Json schemas, HATEOAS)
+- **Separate Ways**: Integration can be difficult regardless of the approach, this "relation" means that there's no real relation between
+these contexts.
+- **Big Ball of Mud**: When you have a legacy codebase with a lot of modules integrated and no clear boundaries between sub domains. Then
+you can draw a big diagram and designate it as a big ball of mud. Applying sophisticated modeling to this context is not recommended.
+Be sure to treat it carefully as it's design may spraw to other contexts if not contained.
+
+Use events to decouple contexts.
