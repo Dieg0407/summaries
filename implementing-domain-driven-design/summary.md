@@ -60,6 +60,7 @@ and how they relate to each other (using submodules, contexts and ubiquitous lan
 * Just as with domains, ideally a team should handle a Bounded Context. This is so there's no concept leaking 
 between contexts as if the team handles more than one, they may confuse the concepts on each context.
 * Use context maps to get a feeling of the landscape of the systems.
+* Use the rigth choices and combinations of architecture and architecture patterns.
 
 ## Chapter 1: Getting started with DDD
 
@@ -193,3 +194,41 @@ you can draw a big diagram and designate it as a big ball of mud. Applying sophi
 Be sure to treat it carefully as it's design may spraw to other contexts if not contained.
 
 Use events to decouple contexts.
+
+## Chapter 4: Architecture
+Decisions regarding architectural patterns must be driven by the functional requirements of the system. Avoid
+using patterns that cannot be justified.
+
+### Layers
+Isolate the concerns of our application on well defined layers. A rule of thumb is that each layer may just
+couple with itself of a layer immediatly below. Based on that, two types exists, **Strict layer architecure** 
+only allows coupling with a layer immediatly below, while **relaxed layer architecture** allows for the coupling
+with *any* below layer. 
+
+A classic setup in this type of architecture looks like:
+
+`UI layer -> Application Layer -> Domain Layer, Infrastructure Layer`
+
+Notes for UI layer:
+* Presentation layer shouldn't perform business validations. They may validate some fields but the domain
+validations should be handled by the domain model.
+* You can use a *Presentation Model* to better isolate the UI from the domain elements.
+* At most the UI should only handle the *presentation* of domain objets, no business logic should exist there.
+* An API layer may be provided, *this will serve the role of an Open Host Service*.
+
+Notes for application layer:
+* They're distinct from domain services.
+* These should handled transaction, security and can handle the event publishing.
+* They're the primary way of expressing user stories in the model.
+* If the app layer becomes complex is a good indicator of domain logic leaking.
+* Make sure these services are small.
+
+Notes for infrastructure layer:
+* We can use Dependency Inversion principle to deocuple the domain from Infrastructure details.
+* This layer is in charge of external communications.
+
+*Dependency Inversion* can be defined as a way in which layer such as Infrastructure depend on
+interfaces defined on the domain layer. Thus "inverting" the dependency order. At runtime they're
+still using the concrete implementations but at the domain level we don't care.
+
+### Hexagonal, Ports and Adapters
