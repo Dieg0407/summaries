@@ -232,3 +232,16 @@ interfaces defined on the domain layer. Thus "inverting" the dependency order. A
 still using the concrete implementations but at the domain level we don't care.
 
 ### Hexagonal, Ports and Adapters
+A style of architecture where the application layer (or inner hexagon) focuses on the business and 
+domain requirements and  the external communicataion is controlled by the ports and the adapters. 
+Each side of the hexagon is a port, and between them and the inner one there're adapters.
+
+In this context a port is the protocol from which access is granted, think HTTPS, or AMQP.
+The adapter is the translator, the one that takes this information and calls the internal 
+use case in the core, think a class @Controller, or an @EventListener or the @Repository implementation.
+
+An advantage of this approach is testing, as the application and domain model can be tested without
+worrying if it's going to use REST, SOAP or whatever other external dependency.
+
+
+### Service Oriented
